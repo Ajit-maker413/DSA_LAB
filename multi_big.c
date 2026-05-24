@@ -1,83 +1,60 @@
 #include<stdio.h>
 #include<string.h>
-#define max 100
-void multiLargeNumber(char num1[],char num2[],char result[])
+
+#define MAX 200
+
+void multiply(char num1[], char num2[], char result[])
 {
-    int len1=strlen(num1);
-    int len2=strlen(num2);
-    int i,c=0;
+    int len1 = strlen(num1);
+    int len2 = strlen(num2);
 
-    char revNum1[max],revNum2[max];
-    for(int i=0;i<len1;i++){
-        revNum1[i]=num1[len1-i-1];
+    int temp[MAX] = {0};   // store intermediate result
+
+    // Multiply like manual method
+    for(int i = len1 - 1; i >= 0; i--)
+    {
+        for(int j = len2 - 1; j >= 0; j--)
+        {
+            int mul = (num1[i] - '0') * (num2[j] - '0');
+            int sum = mul + temp[i + j + 1];
+
+            temp[i + j + 1] = sum % 10;
+            temp[i + j] += sum / 10;
+        }
     }
-    revNum1[len1]='\0';
-    for(int i=0;i<len2;i++){
-        revNum2[i]=num2[len2-i-1];
+
+    // Convert to string (skip leading zeros)
+    int i = 0, k = 0;
+
+    while(i < len1 + len2 && temp[i] == 0)
+        i++;
+
+    if(i == len1 + len2)
+    {
+        result[k++] = '0';
     }
-    revNum2[len2]='\0';
-       for(int i = 0; i < max; i++)
-        result[i] = '0';
-    
+    else
+    {
+        while(i < len1 + len2)
+            result[k++] = temp[i++] + '0';
+    }
 
-  int maxLen=len1+len2;
-    int multi,rem,carry=0;
-    int dis=0;
-      for(int k=0;k<len1;k++)
-      {
-        int digit1=revNum1[k]-'0';
-        carry=0;
-         for(int j=0;j<len2;j++)
-         {
-
-            int digit2=revNum2[j] - '0';
-             multi=digit1*digit2+carry;
-             if(multi>10)
-             {
-            
-                carry=multi/10;
-                multi=multi%10;
-      
-                result[k+j+dis]=result[k+j+dis]+multi;
-
-             }
-             else{
-                result[k+j+dis]=result[k+j+dis]+multi;
-             }
-             
-         }
-         if( carry>0)
-             {
-                result[k+len2+dis]= result[k+dis]+carry;
-             }
-          dis++;
-       
-      }
-    
-  result[len1+len2]='\0';
-
-  for(int i = 0; i < len1 + len2; i++)
-    result[i] += '0';
-result[len1+len2] = '\0';
-
-
-  int resultLen=strlen(result);
-  for(int i=0;i<resultLen/2;i++)
-  {
-    char temp=result[i];
-    result[i]=result[resultLen-i-1];
-    result[resultLen -i-1]=temp;
-  }
-   printf("sum of the two integer   : %s\n",result);
-
+    result[k] = '\0';
 }
-int main(){
 
-    char num1[max],num2[max],result[max+1];
-    printf(" Enter the first large integer \n");
-    scanf("%s",num1);
-    printf(" Enter the first large integer \n");
-    scanf("%s",num2);
-  multiLargeNumber(num1, num2,result);
+int main()
+{
+    char num1[MAX], num2[MAX], result[MAX];
 
+    printf("Enter first large number: ");
+    scanf("%s", num1);
+
+    printf("Enter second large number: ");
+    scanf("%s", num2);
+
+    multiply(num1, num2, result);
+
+    printf("Multiplication Result: %s\n", result);
+
+    return 0;
 }
